@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Property Analyst — 輸入</title>
+<style>
+:root{--navy:#1B365D;--n2:#2E5E9E;--steel:#D9E2F3;--yl:#FFF2CC;--blue:#0000CC;--red:#B3261E;--grn:#1E7B45;--amb:#8A6D1A}
+*{box-sizing:border-box}
+html,body{margin:0;max-width:100%}
+body{font:400 13px/1.45 Calibri,'Microsoft JhengHei',sans-serif;background:#F3F5F9;color:#1a1a1a;overflow-x:hidden}
+input,select,textarea,button{font-family:inherit}
+.wrap{max-width:860px;margin:0 auto;padding:16px;overflow-wrap:break-word}
+header{background:linear-gradient(135deg,#1B365D,#2E5E9E);color:#fff;border-radius:12px;padding:13px 16px;margin-bottom:10px}
+header h1{margin:0;font-size:19px}
+header p{margin:4px 0 0;font-size:11.5px}
+.stepper{display:flex;gap:8px;margin-bottom:10px}
+.step{flex:1 1 0;width:100%;min-height:44px;padding:11px 9px;border:1px solid #b9c3d4;border-radius:10px;background:#fff;color:#5a6577;font-size:12.5px;font-weight:700;text-align:center;cursor:pointer}
+.step:focus-visible{outline:3px solid var(--n2);outline-offset:2px}
+.step.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.card{background:#fff;border-radius:12px;box-shadow:0 1px 5px rgba(27,54,93,.1);padding:14px;margin-bottom:10px}
+.card h3{margin:0 0 10px;font-size:13px;color:var(--navy);border-bottom:2px solid var(--navy);padding-bottom:6px}
+.panel{display:none}.panel.on{display:block}.hidden{display:none!important}
+.seg{display:flex;gap:8px;margin-bottom:10px}
+.seg-btn{flex:1 1 0;min-height:44px;padding:7px;border:1px solid #b9c3d4;border-radius:8px;background:#fff;font-size:12.5px;font-weight:700;color:#5a6577;cursor:pointer}
+.seg-btn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:9px;margin:7px 0}
+.row>label{flex:1 1 auto;min-width:0;padding-top:6px;font-size:12.5px;line-height:1.35}
+.row>label small{display:block;color:#8b95a6;font-size:11px;font-weight:400}
+.row.stack{flex-direction:column;align-items:stretch;gap:3px}
+.row.stack>label{padding-top:0}
+.row>input,.row>select,.row>textarea{flex:0 0 240px;min-width:0;min-height:38px;padding:7px 9px;border:1px solid #b9c3d4;border-radius:7px;background:var(--yl);color:var(--blue);font-size:13px;font-weight:700}
+.row.stack>input,.row.stack>textarea{flex:1 1 auto;width:100%}
+.unit{flex:0 0 auto;font-size:11.5px;font-weight:700;color:#5a6577}
+.row :focus{outline:2px solid var(--n2);outline-offset:-1px}
+.bad{border-color:var(--red)!important;background:#FFECEA!important;color:var(--red)!important}
+.err{display:none;flex:1 1 100%;text-align:right;font-size:11.5px;font-weight:700;color:var(--red)}
+.err.show{display:block}
+.hint,.note{padding:6px 9px;border-radius:4px;margin:7px 0;font-size:11.5px;line-height:1.5}
+.hint{color:var(--amb);background:#FFF7E0;border-left:3px solid #d9a520}
+.note{color:#41506b;background:#EEF3FC;border-left:3px solid var(--n2)}
+.sec{margin:10px 0 3px;padding-top:8px;border-top:1px dashed #cfd8e3;font-size:12px;font-weight:800;color:#334}
+details.adv{border:1px dashed #cfd8e3;border-radius:8px;padding:8px 10px;margin:9px 0;background:#FAFBFE}
+details.adv>summary{cursor:pointer;font-size:12px;font-weight:800;color:var(--navy)}
+.lbl,.scrow{margin:6px 0 3px;font-size:11.5px;color:#41506b}
+.comp-head{display:grid;grid-template-columns:repeat(4,1fr) 32px;gap:6px;margin-top:6px;font-size:11px;font-weight:800;color:#5a6577}
+.comp-row{display:grid;grid-template-columns:repeat(4,1fr) 32px;gap:6px;margin:5px 0;align-items:center}
+.comp-row input{min-height:36px;padding:6px 8px;border:1px solid #b9c3d4;border-radius:7px;background:var(--yl);color:var(--blue);font-size:12.5px;font-weight:700}
+.comp-x{border:1px solid #e0b3ae;background:#fff;color:var(--red);border-radius:7px;height:36px;font-weight:800;cursor:pointer;line-height:1}
+.comp-add{min-height:38px;padding:6px 14px;border:1px dashed var(--steel);border-radius:7px;background:#fff;color:var(--navy);font-size:12px;font-weight:800;cursor:pointer}
+@media (max-width:720px){.comp-head{display:none}.comp-row{grid-template-columns:1fr 1fr;}.comp-row input:nth-child(3){grid-column:1}.comp-row input:nth-child(4){grid-column:2}}
+.lbl{font-weight:800;color:#5a6577}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{padding:3px 8px;border:1px solid var(--steel);border-radius:999px;background:#fff;color:var(--navy);font-size:11px}
+.chip.sc{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:800}
+.summary{display:none;background:#FFECEA;border:1px solid #f0b3ad;border-left:4px solid var(--red);border-radius:8px;padding:8px 10px;margin-bottom:10px}
+.summary.show{display:block}
+.summary b{color:var(--red);font-size:12px}
+.summary ul{margin:3px 0 0;padding-left:18px}
+.summary li{font-size:11.5px;color:#7d1f19}
+.warnbox{display:none;background:#FFF7E0;border:1px solid #e8cf8a;border-left:4px solid #d9a520;border-radius:8px;padding:8px 10px;margin-bottom:10px}
+.warnbox.show{display:block}
+.warnbox b{color:var(--amb);font-size:12px}
+.warnbox ul{margin:3px 0 0;padding-left:18px}
+.warnbox li{font-size:11.5px;color:#6b5410}
+.navcard{position:sticky;bottom:10px;z-index:6;padding:11px 13px;box-shadow:0 -3px 14px rgba(27,54,93,.14)}
+.nav{display:flex;flex-wrap:wrap;gap:7px}
+.btn{flex:1 1 140px;min-height:44px;padding:10px 14px;border:0;border-radius:9px;background:var(--navy);color:#fff;font-size:13.5px;font-weight:800;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:#fff;border:1px solid #b9c3d4;color:var(--navy)}
+.btn.slim{flex:1 1 170px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;text-decoration:none}
+body.busy a.btn{pointer-events:none;opacity:.5}
+.status{display:none;margin-top:9px;padding:8px 10px;border-radius:8px;font-size:12.5px}
+.status.loading,.status.success,.status.error{display:block}
+.status.loading{background:#EEF3FC;border:1px solid var(--steel);color:var(--navy)}
+.status.success{background:#E8F5EC;border:1px solid #a9d8b8;color:var(--grn);font-weight:700}
+.status.error{background:#FFECEA;border:1px solid #f0b3ad;color:var(--red);font-weight:700}
+.spin{display:inline-block;width:10px;height:10px;margin-right:6px;border-radius:50%;border:2px solid rgba(27,54,93,.25);border-top-color:var(--navy);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:7px;margin-top:9px}
+.kpi{padding:7px 9px;border:1px solid var(--steel);border-radius:9px;background:#F7F9FD;min-width:0;overflow-wrap:anywhere}
+.kpi b{display:block;font-size:10.5px;font-weight:700;color:#5a6577}
+.kpi span{font-size:13.5px;font-weight:800;color:var(--navy)}
+.kpi.hi,.kpi.hi b{background:var(--navy);border-color:var(--navy);color:#c9d8f0}
+.kpi.hi span{color:#fff}
+.fallback{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+@media (max-width:720px){.wrap{padding:11px}.card{padding:12px}.stepper,.seg{flex-direction:column;gap:5px}
+.row{flex-wrap:wrap;gap:4px 6px}.row>label{flex:1 1 100%;padding-top:0}
+.row>input,.row>select,.row>textarea{flex:1 1 140px;width:auto;min-height:44px}
+.row.stack>input,.row.stack>textarea{flex:1 1 100%}.err{text-align:left}
+.kpis{grid-template-columns:1fr}.navcard{bottom:0}.nav .btn{flex:1 1 100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>AI Property Analyst</h1>
+<p>三步輸入 → 抽取／underwriting／估值／壓力測試／風險 → 獨立分析報告（新分頁開啟）。後端會重新驗證所有欄位。</p>
+</header>
+
+<div class="stepper" id="stepper" role="tablist" aria-label="輸入步驟">
+<button type="button" class="step on" data-step="1" id="stepTab1" role="tab" aria-selected="true" aria-controls="panelStep1">① 物業 Property</button>
+<button type="button" class="step" data-step="2" id="stepTab2" role="tab" aria-selected="false" aria-controls="panelStep2" tabindex="-1">② 財政狀況 Financial</button>
+<button type="button" class="step" data-step="3" id="stepTab3" role="tab" aria-selected="false" aria-controls="panelStep3" tabindex="-1">③ 融資／投資 Financing</button>
+</div>
+
+<section class="card panel on" data-panel="1" id="panelStep1" role="tabpanel" aria-labelledby="stepTab1">
+<h3>STEP 1 — 物業資料 Property</h3>
+<div class="summary" id="errSummary"></div>
+<div class="warnbox" id="warnSummary"></div>
+
+<div class="seg" id="modeSeg">
+<button type="button" class="seg-btn on" data-mode="auto">① 自動：貼樓盤網址</button>
+<button type="button" class="seg-btn" data-mode="manual">② 手動輸入物業資料</button>
+</div>
+
+<details class="adv" id="compBox">
+<summary>＋ 可比成交 Comparable evidence（選填，但這是估值唯一的外部證據來源）</summary>
+<div class="hint">貼上 2–5 筆<strong>同屋苑／同區、相近面積</strong>的成交價（例如從中原或土地註冊處）。
+系統會用它們推算公允價值與溢價／折讓，並 <strong>把估值由 Insufficient Data 變成可判斷</strong>。
+價格與面積<strong>兩者都填</strong>才會採用；只填價格的列會被忽略。這些是你提供的資料，
+報告會標示為 User Input，不會當成自動來源。<br>
+<strong>自動模式一樣要填這裡</strong>：網址只用來取得這個單位的叫價與面積，市場證據仍然來自你貼的成交。</div>
+<div class="comp-head"><div>屋苑 Estate</div><div>間隔 Layout</div><div>價格 Price (HK$)</div><div>面積 Area (呎)</div><div></div></div>
+<div id="compRows"></div>
+<button type="button" class="comp-add" id="compAdd">＋ 新增一筆</button>
+<div class="warnbox" id="compWarn"></div>
+</details>
+
+<div id="autoBlock">
+<div class="row stack">
+<label>樓盤網址 Property URL<small>中原／美聯樓盤頁；系統會嘗試自動抽取價格與面積</small></label>
+<input data-field="property.url" type="text" placeholder="https://hk.centanet.com/findproperty/detail/...">
+</div>
+<div class="row">
+<label>價格覆寫 Price override (HK$)</label>
+<input data-field="overrides.price" data-money="1" type="text" inputmode="numeric" placeholder="8,300,000">
+</div>
+<div class="row">
+<label>面積覆寫 Area override (呎)</label>
+<input data-field="overrides.area" data-money="1" type="text" inputmode="numeric" placeholder="741">
+</div>
+<div class="hint">網站可能讀不到價格／面積（阻擋、改版、已刪盤）。此時請切到「② 手動輸入」或填寫覆寫值；系統不會猜測價格。</div>
+</div>
+
+<div id="manualBlock" class="hidden">
+<div class="row"><label>屋苑 Estate</label>
+<input data-field="property.estate" type="text" placeholder="昇薈"></div>
+<div class="row"><label>地區 District</label>
+<input data-field="property.district" type="text" placeholder="東涌"></div>
+<div class="row"><label>大廈 Building</label>
+<input data-field="property.building" type="text" placeholder="第 3 座"></div>
+<div class="row"><label>間隔 Layout</label>
+<input data-field="property.layout" type="text" placeholder="3房2廳"></div>
+<div class="row"><label>叫價 Asking Price (HK$)<small>必填；可直接輸入千分位</small></label>
+<input data-field="property.asking_price" data-money="1" type="text" inputmode="numeric" placeholder="8,300,000"></div>
+<div class="row"><label>實用面積 Saleable Area (呎)<small>必填</small></label>
+<input data-field="property.usable_area_sqft" data-money="1" type="text" inputmode="numeric" placeholder="741"></div>
+<div class="row"><label>建築面積 Gross Area (呎)</label>
+<input data-field="property.gross_area_sqft" data-money="1" type="text" inputmode="numeric" placeholder="980"></div>
+<div class="row"><label>樓層 Floor</label>
+<input data-field="property.floor" type="text" placeholder="18/F"></div>
+<div class="row"><label>樓齡 Building Age (年)</label>
+<input data-field="property.building_age" data-kind="int" type="text" inputmode="numeric" placeholder="12"></div>
+<div class="row"><label>每月管理費 Management Fee (HK$/月)</label>
+<input data-field="property.monthly_mgmt_rates" data-money="1" type="text" inputmode="numeric" placeholder="1,200"></div>
+<div class="row"><label>每月差餉地租 Rates (HK$/月)</label>
+<input data-field="property.rates_amount" data-money="1" type="text" inputmode="numeric" placeholder="350"></div>
+<div class="row stack"><label>特殊條件 Special Features<small>選填，如：連車位、已做大維修、凶宅同層、短租限制</small></label>
+<textarea data-field="property.special_features" rows="2" placeholder="連車位；2023 年完成外牆大維修"></textarea></div>
+</div>
+</section>
+
+<section class="card panel" data-panel="2" id="panelStep2" role="tabpanel" aria-labelledby="stepTab2">
+<h3>STEP 2 — 財政狀況 Your Financial Profile</h3>
+<div class="note">以下是你本人的現金流與儲備，用於 DSR（供款佔比）、壓力測試與交易所需現金。銀行的可負擔計算 ≠ 你的個人舒適水平。</div>
+<div class="sec">每月收入 Monthly income</div>
+<div class="row"><label>每月總收入 Gross Monthly Income (HK$/月)<small>稅前、未扣強積金</small></label>
+<input data-field="finance.gross_monthly_income" data-money="1" type="text" inputmode="numeric" placeholder="45,000"></div>
+<div class="row"><label>每月淨收入 Net Monthly Income (HK$/月)<small>稅後到手；DSR 以此計算</small></label>
+<input data-field="finance.monthly_net_income" data-money="1" type="text" inputmode="numeric" placeholder="38,000"></div>
+<div class="row"><label>其他固定收入 Other Recurring Income (HK$/月)</label>
+<input data-field="finance.other_recurring_income" data-money="1" type="text" inputmode="numeric" value="0"></div>
+<div class="row"><label>現有每月債務 Existing Monthly Debt (HK$/月)<small>沒有請填 0</small></label>
+<input data-field="finance.existing_monthly_debt" data-money="1" type="text" inputmode="numeric" value="0"></div>
+<div class="row"><label>可動用現金 Liquid Cash (HK$)<small>存款、股票等可即時變現資產</small></label>
+<input data-field="finance.liquid_cash" data-money="1" type="text" inputmode="numeric" placeholder="1,500,000"></div>
+<div class="row"><label>可用於交易的現金 Available Cash (HK$)<small>首期＋稅費＋佣金＋裝修</small></label>
+<input data-field="finance.available_cash_for_transaction" data-money="1" type="text" inputmode="numeric" placeholder="1,800,000"></div>
+<div class="row"><label>應急儲備 Emergency Reserve (HK$)</label>
+<input data-field="finance.emergency_reserve" data-money="1" type="text" inputmode="numeric" placeholder="300,000"></div>
+<div class="row"><label>最高舒適月供 Max Comfortable Payment (HK$/月)<small>你自己安心的上限，不是銀行上限</small></label>
+<input data-field="finance.max_comfortable_monthly_payment" data-money="1" type="text" inputmode="numeric" placeholder="16,000"></div>
+</section>
+
+<section class="card panel" data-panel="3" id="panelStep3" role="tabpanel" aria-labelledby="stepTab3">
+<h3>STEP 3 — 融資／投資設定 Financing &amp; Investment</h3>
+<div class="note">百分比欄位請直接輸入<strong>百分數</strong>：LTV 填 <strong>60</strong>、按揭利率填 <strong>4.125</strong>、空置率填 <strong>5</strong>；系統送出前會自動 ÷100。</div>
+
+<div class="row"><label>目的 Purpose<small>選收租才會啟用收租假設</small></label>
+<select id="f-purpose" data-field="purpose">
+<option value="owner_occupier">自住置業 Owner-Occupier</option>
+<option value="rental">收租投資 Rental / BTL</option>
+</select></div>
+
+<div class="sec">按揭假設 Mortgage</div>
+<div class="row"><label>貸款成數 LTV (%)<small>例如 60（＝六成按揭）</small></label>
+<input data-field="financing.ltv" data-kind="pct" type="text" inputmode="decimal" value="60" placeholder="60"><span class="unit">%</span></div>
+<div class="row"><label>按揭年利率 Mortgage Rate (%)<small>例如 4.125</small></label>
+<input data-field="financing.mortgage_rate" data-kind="pct" type="text" inputmode="decimal" value="4.125" placeholder="4.125"><span class="unit">%</span></div>
+<div class="row"><label>還款年期 Tenure (年)<small>1–40</small></label>
+<input data-field="financing.tenure_years" data-kind="int" type="text" inputmode="numeric" value="30" placeholder="30"></div>
+<div class="row"><label>還款方式 Amortization</label>
+<select data-field="financing.amortization">
+<option value="PI">PI 本息攤還 Principal + Interest</option>
+<option value="IO">IO 只還利息 Interest Only</option>
+</select></div>
+
+<div id="rentalBlock" class="hidden">
+<div class="sec">收租假設 Rental assumptions（收租模式）</div>
+<div class="row"><label>每月租金 Monthly Rent (HK$/月)<small>收租模式必填</small></label>
+<input data-field="rental.monthly_rent" data-money="1" type="text" inputmode="numeric" placeholder="30,000"></div>
+<div class="row"><label>空置率 Vacancy (%)</label>
+<input data-field="rental.vacancy" data-kind="pct" type="text" inputmode="decimal" value="5" placeholder="5"><span class="unit">%</span></div>
+<div class="row"><label>差餉地租比率 Rates (% of PGI)</label>
+<input data-field="rental.rates_pct" data-kind="pct" type="text" inputmode="decimal" value="6" placeholder="6"><span class="unit">%</span></div>
+<div class="row"><label>管理維修比率 Opex (% of EGI)</label>
+<input data-field="rental.opex_pct" data-kind="pct" type="text" inputmode="decimal" value="8" placeholder="8"><span class="unit">%</span></div>
+<div class="row"><label>每年維修預備 Annual Capex (HK$/年)</label>
+<input data-field="rental.annual_capex" data-money="1" type="text" inputmode="numeric" value="10000" placeholder="10,000"></div>
+<div class="row"><label>租金年增長 Rent Growth (%)<small>可為負數</small></label>
+<input data-field="rental.rent_growth" data-kind="pct" type="text" inputmode="decimal" value="3" placeholder="3"><span class="unit">%</span></div>
+<div class="row"><label>持有年期 Hold Years (年)<small>1–50</small></label>
+<input data-field="rental.hold_years" data-kind="int" type="text" inputmode="numeric" value="5" placeholder="5"></div>
+<div class="row"><label>退出資本化率 Exit Cap Rate (%)</label>
+<input data-field="rental.exit_cap" data-kind="pct" type="text" inputmode="decimal" value="3.5" placeholder="3.5"><span class="unit">%</span></div>
+<div class="row"><label>賣出成本 Selling Cost (%)</label>
+<input data-field="rental.sell_cost" data-kind="pct" type="text" inputmode="decimal" value="1" placeholder="1"><span class="unit">%</span></div>
+</div>
+
+<details class="adv">
+<summary>進階：交易費用 Acquisition costs（選填，留空用系統預設）</summary>
+<div class="row"><label>代理佣金率 Agency Fee (%)</label>
+<input data-field="acquisition.agency_fee_pct" data-kind="pct" type="text" inputmode="decimal" value="1" placeholder="1"><span class="unit">%</span></div>
+<div class="row"><label>律師費率 Legal Fee (%)</label>
+<input data-field="acquisition.legal_fee_pct" data-kind="pct" type="text" inputmode="decimal" value="0.5" placeholder="0.5"><span class="unit">%</span></div>
+<div class="row"><label>按揭相關費用 Mortgage Fees (HK$)</label>
+<input data-field="acquisition.mortgage_fees" data-money="1" type="text" inputmode="numeric" placeholder="0"></div>
+<div class="row"><label>估價費 Valuation Fee (HK$)</label>
+<input data-field="acquisition.valuation_fee" data-money="1" type="text" inputmode="numeric" placeholder="0"></div>
+<div class="row"><label>裝修傢俬 Renovation &amp; Furnishing (HK$)</label>
+<input data-field="acquisition.renovation_furnishing" data-money="1" type="text" inputmode="numeric" placeholder="150,000"></div>
+<div class="row"><label>初始儲備 Initial Reserve (HK$)</label>
+<input data-field="acquisition.initial_reserve" data-money="1" type="text" inputmode="numeric" placeholder="100,000"></div>
+<div class="row"><label>交易費用率 Transaction Cost Rate (%)<small>預設 1.5</small></label>
+<input data-field="financing.fee_rate" data-kind="pct" type="text" inputmode="decimal" value="1.5" placeholder="1.5"><span class="unit">%</span></div>
+<div class="row"><label>折現率 Discount Rate (%)<small>預設 6；用於 NPV</small></label>
+<input data-field="financing.discount_rate" data-kind="pct" type="text" inputmode="decimal" value="6" placeholder="6"><span class="unit">%</span></div>
+</details>
+
+<div class="note hidden" id="sysPanel">
+<div class="lbl">情境與壓力測試設定（由系統設定，不由前端決定）</div>
+<div id="sysBody"></div>
+</div>
+</section>
+
+<div class="card navcard">
+<div class="nav" id="nav">
+<button type="button" class="btn ghost" id="backBtn">← 上一步 Back</button>
+<button type="button" class="btn ghost" id="nextBtn">下一步 Next →</button>
+<button type="button" class="btn" id="runBtn" disabled>開始分析 / Run Underwriting</button>
+<button type="button" class="btn ghost" id="clearBtn">清除草稿 Clear draft</button>
+</div>
+<div class="status idle" id="status" role="status" aria-live="polite"></div>
+<div class="kpis hidden" id="kpis"></div>
+<div class="fallback hidden" id="fallback">
+<button type="button" class="btn slim" id="openBtn">開啟報告 Open Report</button>
+<a class="btn slim" id="dlBtn" download="property_report.html" href="#">下載報告 Download</a>
+</div>
+</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ONE module-scoped state object. Step headers are indicators; Back/Next move the step. */
+var state={mode:'auto',purpose:'owner_occupier',step:1,busy:false,errors:[],analysis:null,reportUrl:null,ready:false};
+function $(id){return document.getElementById(id);}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function mk(tag,cls,text){var n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n;}
+function byField(p){return document.querySelector('[data-field="'+p+'"]');}
+function isHidden(el){return !!(el&&el.closest&&el.closest('.hidden'));}
+/* money fields carry data-money; other numeric fields carry data-kind="pct|int" */
+function kindOf(el){return el.hasAttribute('data-money')?'money':(el.getAttribute('data-kind')||'text');}
+function rawOf(el){return el.value==null?'':String(el.value).trim();}
+function stepOfEl(el){var p=el.closest?el.closest('.panel'):null;return p?(parseInt(p.getAttribute('data-panel'),10)||1):1;}
+function stepOfPath(p){var el=byField(p);return el?stepOfEl(el):0;}
+function labelOf(el){
+ var row=el.closest?el.closest('.row'):null,lab=row?row.querySelector('label'):null;
+ return lab?String(lab.firstChild.textContent||'').trim():(el.getAttribute('data-field')||'欄位');
+}
+/* "8,300,000" / "HK$ 8 300 000" / "8300000元" -> 8300000 (a plain number, no commas) */
+function parseMoney(v){
+ if(v===null||v===undefined)return null;
+ var s=String(v).replace(/hk\$|hkd|港元|[\s,，_$]/gi,'').replace(/元$/,'').trim();
+ if(s==='')return null;
+ var n=Number(s);
+ return isFinite(n)?n:null;
+}
+function formatMoney(n){
+ if(n===null||n===undefined||n===''||isNaN(n))return '';
+ n=Number(n);
+ if(!isFinite(n))return '';
+ var neg=n<0,p=String(Math.round(Math.abs(n)*100)/100).split('.');
+ p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');
+ return (neg?'-':'')+p.join('.');
+}
+/* the number exactly as displayed: percent fields stay percent numbers.
+   blank -> null, unparseable -> NaN, otherwise the number */
+function readNumber(el){
+ var raw=rawOf(el);
+ if(raw==='')return null;
+ var s=raw.replace(/hk\$|hkd|港元|[\s,，_$]/gi,'').replace(/%$/,'').replace(/元$/,'');
+ if(s==='')return NaN;
+ var n=Number(s);
+ if(!isFinite(n))return NaN;
+ return kindOf(el)==='int'?Math.round(n):n;
+}
+function setField(path,value){
+ var el=byField(path);
+ if(!el)return false;
+ var v=(value==null)?'':String(value),n=v===''?null:parseMoney(v);
+ el.value=(n===null)?v:formatMoney(n);
+ return true;
+}
+
+/* PERCENT FIELDS: the user types a percent number; we send value/100 */
+var PERCENT_FIELDS={
+ 'financing.ltv':1,'financing.mortgage_rate':1,'financing.fee_rate':1,'financing.discount_rate':1,
+ 'rental.vacancy':1,'rental.rates_pct':1,'rental.opex_pct':1,'rental.rent_growth':1,
+ 'rental.exit_cap':1,'rental.sell_cost':1,
+ 'acquisition.agency_fee_pct':1,'acquisition.legal_fee_pct':1
+};
+/* 60 -> 0.60 · 4.125 -> 0.04125 · 5 -> 0.05 · 3.5 -> 0.035 */
+function toWire(path,value){
+ return PERCENT_FIELDS[path]?value/100:value;
+}
+
+/* RULES: lo/hi use the SAME unit the user types (percent number, HK$, 年) */
+var NUM='請輸入數字（可含千分位逗號，例如 8,300,000）。';
+var NEG='不可為負數（請輸入 0 或以上）。';
+var R={};
+['property.gross_area_sqft','property.monthly_mgmt_rates','property.rates_amount',
+ 'finance.gross_monthly_income','finance.monthly_net_income','finance.other_recurring_income',
+ 'finance.existing_monthly_debt','finance.liquid_cash','finance.available_cash_for_transaction',
+ 'finance.emergency_reserve','finance.max_comfortable_monthly_payment','rental.annual_capex',
+ 'acquisition.mortgage_fees','acquisition.valuation_fee','acquisition.renovation_furnishing',
+ 'acquisition.initial_reserve'].forEach(function(p){R[p]={lo:0,m:NEG};});
+R['property.url']={rq:1,m:'請貼上樓盤網址；或改用「② 手動輸入」，或填寫價格覆寫。',
+ w:function(){return state.mode==='auto'&&readNumber(byField('overrides.price'))===null;}};
+R['property.asking_price']={rq:1,lo:0,g:1,m:'叫價必須大於 0（HK$）。'};
+R['property.usable_area_sqft']={rq:1,lo:0,g:1,m:'實用面積必須大於 0（呎）。'};
+R['property.building_age']={lo:0,hi:120,m:'樓齡必須介乎 0–120 年。'};
+R['financing.ltv']={lo:0,hi:100,m:'LTV 必須介乎 0%–100%（請輸入百分數，例如 60）。'};
+R['financing.mortgage_rate']={lo:0,g:1,hi:30,m:'按揭年利率必須介乎 0%–30%（請輸入百分數）。'};
+R['financing.tenure_years']={rq:1,lo:1,hi:40,m:'還款年期必須介乎 1–40 年。'};
+R['financing.fee_rate']={lo:0,hi:10,m:'交易費用率必須介乎 0%–10%。'};
+R['financing.discount_rate']={lo:0,hi:50,m:'折現率必須介乎 0%–50%。'};
+R['rental.monthly_rent']={rq:1,lo:0,g:1,m:'收租模式必須填寫每月租金（大於 0）。'};
+R['rental.vacancy']={lo:0,hi:100,m:'空置率必須介乎 0%–100%。'};
+R['rental.rates_pct']={lo:0,hi:100,m:'差餉地租比率必須介乎 0%–100%。'};
+R['rental.opex_pct']={lo:0,hi:100,m:'管理維修比率必須介乎 0%–100%。'};
+R['rental.rent_growth']={lo:-30,hi:30,m:'租金年增長必須介乎 -30%–30%。'};
+R['rental.hold_years']={rq:1,lo:1,hi:50,m:'持有年期必須介乎 1–50 年。'};
+R['rental.exit_cap']={lo:0,g:1,hi:25,m:'退出資本化率必須大於 0% 且不超過 25%。'};
+R['rental.sell_cost']={lo:0,hi:100,m:'賣出成本必須介乎 0%–100%。'};
+R['acquisition.agency_fee_pct']={lo:0,hi:10,m:'代理佣金率必須介乎 0%–10%。'};
+R['acquisition.legal_fee_pct']={lo:0,hi:10,m:'律師費率必須介乎 0%–10%。'};
+R['overrides.price']={lo:0,g:1,m:'價格覆寫必須大於 0（HK$）。'};
+R['overrides.area']={lo:0,g:1,m:'面積覆寫必須大於 0（呎）。'};
+
+/* DRAFT PERSISTENCE — three steps of financial numbers are too much to lose to
+   an accidental F5. sessionStorage is deliberate: it survives a refresh but is
+   discarded when the tab closes, so personal financial figures are not left
+   lying around on the machine the way localStorage would leave them. */
+var DRAFT_KEY='hkap.draft.v1';
+function draftStore(){
+ try{return window.sessionStorage||null;}catch(e){return null;}   /* private mode */
+}
+function saveDraft(){
+ var st=draftStore();
+ if(!st||state.busy||!state.ready)return;   /* never write while init is still restoring */
+ try{
+  var f={};
+  $$('[data-field]').forEach(function(el){
+   var p=el.getAttribute('data-field');
+   if(p)f[p]=rawOf(el);
+  });
+  st.setItem(DRAFT_KEY,JSON.stringify({v:1,mode:state.mode,purpose:state.purpose,
+   step:state.step,fields:f,comps:readCompRows(),at:Date.now()}));
+ }catch(e){}                       /* quota / disabled storage must never break the UI */
+}
+function loadDraft(){
+ var st=draftStore();
+ if(!st)return null;
+ try{
+  var d=JSON.parse(st.getItem(DRAFT_KEY)||'null');
+  return (d&&d.v===1&&typeof d.fields==='object')?d:null;
+ }catch(e){return null;}
+}
+function clearDraft(){
+ var st=draftStore();
+ try{if(st)st.removeItem(DRAFT_KEY);}catch(e){}
+}
+function restoreDraft(){
+ var d=loadDraft();
+ if(!d)return null;
+ if(d.mode)setMode(d.mode);
+ if(d.purpose)setPurpose(d.purpose);
+ $$('[data-field]').forEach(function(el){
+  var p=el.getAttribute('data-field');
+  if(p&&Object.prototype.hasOwnProperty.call(d.fields,p)){
+   var v=d.fields[p];
+   if(v!==''&&v!=null)el.value=v;
+  }
+ });
+ if(d.comps&&d.comps.length){
+  var host=$('compRows');if(host)host.innerHTML='';
+  d.comps.forEach(function(c){addCompRow(c);});
+  var box=$('compBox');if(box)box.open=true;      /* restored evidence must be visible */
+ }
+ return d;
+}
+
+/* CROSS-FIELD RULES — mirrored server-side in tools/schema.py, because the
+   backend re-validates everything and must not trust this file.
+   sev:'err' blocks submission; sev:'warn' is an advisory that never blocks
+   (a surprising-but-legitimate case must not be locked out). */
+function numOf(path){var el=byField(path);return (!el||isHidden(el))?null:readNumber(el);}
+function hk(n){return 'HK$'+formatMoney(n);}
+function crossChecks(){
+ var out=[],usable=numOf('property.usable_area_sqft'),gross=numOf('property.gross_area_sqft');
+ if(usable&&gross&&usable>gross)out.push({field:'property.gross_area_sqft',sev:'err',
+  message:'建築面積（'+formatMoney(gross)+' 呎）不可小於實用面積（'+formatMoney(usable)+' 呎）。',
+  hint:'實用面積通常小於建築面積；請檢查兩個數字是否填反了。'});
+ var net=numOf('finance.monthly_net_income'),grossInc=numOf('finance.gross_monthly_income');
+ if(net!==null&&grossInc!==null&&net>grossInc)out.push({field:'finance.monthly_net_income',sev:'warn',
+  message:'每月淨收入（'+hk(net)+'）高於每月總收入（'+hk(grossInc)+'）。'});
+ var comfort=numOf('finance.max_comfortable_monthly_payment');
+ if(net!==null&&comfort!==null&&comfort>net)out.push({field:'finance.max_comfortable_monthly_payment',sev:'warn',
+  message:'最高舒適月供（'+hk(comfort)+'）高於每月淨收入（'+hk(net)+'）。',
+  hint:'月供已用盡全部收入，生活開支無處可出。'});
+ var avail=numOf('finance.available_cash_for_transaction'),liquid=numOf('finance.liquid_cash');
+ if(avail!==null&&liquid!==null&&avail>liquid)out.push({field:'finance.available_cash_for_transaction',sev:'warn',
+  message:'可用於交易的現金（'+hk(avail)+'）高於可動用現金（'+hk(liquid)+'）。'});
+ return out;
+}
+function crossErrors(){return crossChecks().filter(function(c){return c.sev==='err';});}
+function renderWarnings(items){
+ var box=$('warnSummary');
+ if(!box)return;
+ box.textContent='';
+ if(!items.length){box.classList.remove('show');return;}
+ box.appendChild(mk('b','','提醒（不阻擋送出）'+items.length+' 項：'));
+ var ul=mk('ul');
+ items.forEach(function(c){
+  var el=byField(c.field);
+  ul.appendChild(mk('li','',(el?labelOf(el):c.field)+' — '+c.message+(c.hint?'（'+c.hint+'）':'')));
+ });
+ box.appendChild(ul);
+ box.classList.add('show');
+ placeSummary();
+}
+function refreshCross(){
+ renderWarnings(crossChecks().filter(function(c){return c.sev==='warn';}));
+}
+
+function validateStep(step){
+ var out=[];
+ $$('[data-field]').forEach(function(el){
+  if(stepOfEl(el)!==step||isHidden(el))return;
+  var path=el.getAttribute('data-field'),r=R[path];
+  if(!r||(r.w&&!r.w()))return;
+  var raw=rawOf(el);
+  if(raw===''){if(r.rq)out.push({field:path,message:r.m});return;}
+  var kind=kindOf(el);
+  if(kind==='text'||kind==='enum')return;
+  var n=readNumber(el);
+  if(n===null||isNaN(n)){out.push({field:path,message:NUM});return;}
+  if((r.lo!==undefined&&(r.g?!(n>r.lo):n<r.lo))||(r.hi!==undefined&&n>r.hi))out.push({field:path,message:r.m});
+ });
+ return out;
+}
+function validateAll(){return validateStep(1).concat(validateStep(2),validateStep(3),crossErrors());}
+
+/* buildPayload: the exact nested contract; blanks omitted, percentages /100 */
+/* COMPARABLE EVIDENCE — the user's own reading of the market. There is no free
+   feed of Hong Kong transaction prices, so this is the only way to obtain real
+   price evidence; without it the valuation stays Insufficient Data. Entries are
+   sent as `comparables` and tagged User Input server-side. */
+var COMP_FIELDS=['estate','layout','price','area'];
+function compRowCount(){return $$('#compRows .comp-row').length;}
+function compWarn(){
+ var box=$('compWarn');if(!box)return;
+ var partial=[],full=0;
+ $$('#compRows .comp-row').forEach(function(row,i){
+  var price=rawOf(row.querySelector('[data-comp="price"]'));
+  var area=rawOf(row.querySelector('[data-comp="area"]'));
+  if(!price&&!area)return;                       /* an untouched blank row is not an error */
+  if(!price||!area)partial.push(i+1);else full++;
+ });
+ var msgs=[];
+ if(partial.length)msgs.push('第 '+partial.join('、')+' 列的價格或面積未填齊，未填齊的列不會被採用。');
+ if(full===1)msgs.push('只有 1 筆可比成交：不足以推算公允價值（估值將維持 Insufficient Data），'
+                       +'請再填至少 1 筆。');
+ box.textContent=msgs.join(' ');
+ if(msgs.length)box.classList.add('show');else box.classList.remove('show');
+}
+function addCompRow(v){
+ v=v||{};
+ var host=$('compRows');if(!host)return;
+ var row=mk('div','comp-row');
+ COMP_FIELDS.forEach(function(f){
+  var inp=document.createElement('input');
+  inp.type='text';inp.setAttribute('data-comp',f);
+  if(f==='price'){inp.setAttribute('data-money','1');inp.inputMode='numeric';inp.placeholder='7,960,000';}
+  else if(f==='area'){inp.setAttribute('data-money','1');inp.inputMode='numeric';inp.placeholder='530';}
+  else if(f==='estate')inp.placeholder='昇薈';
+  else inp.placeholder='2房';
+  if(v[f]!=null)inp.value=String(v[f]);
+  inp.addEventListener('input',function(){compWarn();saveDraft();});
+  row.appendChild(inp);
+ });
+ var x=mk('button','comp-x','×');
+ x.type='button';x.title='移除這一筆';x.setAttribute('aria-label','移除這一筆可比成交');
+ x.addEventListener('click',function(){row.parentNode.removeChild(row);compWarn();saveDraft();});
+ row.appendChild(x);
+ host.appendChild(row);
+ compWarn();
+}
+function readCompRows(){
+ var out=[];
+ $$('#compRows .comp-row').forEach(function(row){
+  var g={};
+  COMP_FIELDS.forEach(function(f){g[f]=rawOf(row.querySelector('[data-comp="'+f+'"]'));});
+  var price=parseMoney(g.price),area=parseMoney(g.area);
+  if(price===null||area===null||price<=0||area<=0)return;   /* incomplete -> not evidence */
+  var item={price:price,usable_area_sqft:area};
+  if(g.estate)item.estate=g.estate;
+  if(g.layout)item.layout=g.layout;
+  out.push(item);
+ });
+ return out;
+}
+
+function buildPayload(){
+ var g={property:{},finance:{},financing:{},rental:{},acquisition:{},overrides:{}};
+ $$('[data-field]').forEach(function(el){
+  var path=el.getAttribute('data-field');
+  if(!path||path.indexOf('.')<0||isHidden(el))return;
+  var seg=path.split('.'),grp=g[seg[0]];
+  if(!grp)return;
+  var kind=kindOf(el);
+  if(kind==='text'||kind==='enum'){
+   var t=rawOf(el);
+   if(t!=='')grp[seg[1]]=t;                            /* blank -> key omitted */
+   return;
+  }
+  var n=readNumber(el);
+  if(n===null||isNaN(n))return;                        /* blank / unparseable -> key omitted */
+  if(kind==='int')n=Math.round(n);
+  grp[seg[1]]=toWire(path,n);                          /* percent fields: value / 100 */
+ });
+ var body={mode:state.mode,purpose:state.purpose,property:g.property,finance:g.finance,
+  financing:g.financing,acquisition:g.acquisition,overrides:g.overrides};
+ /* rental is attached ONLY when the purpose is rental (owner mode: key absent) */
+ if(state.purpose==='rental')body.rental=g.rental;
+ if(!Object.keys(g.acquisition).length)delete body.acquisition;
+ if(!Object.keys(g.overrides).length)delete body.overrides;
+ var comps=readCompRows();
+ if(comps.length)body.comparables=comps;      /* absent when the user supplied none */
+ return body;
+}
+
+function errBox(el){
+ var host=el.parentNode,box=host?host.querySelector('.err'):null;
+ if(!box){box=mk('div','err');if(host)host.appendChild(box);}
+ return box;
+}
+function markField(el,msg,hint){
+ el.classList.add('bad');
+ var box=errBox(el);
+ box.textContent=(msg||'請檢查此欄位。')+(hint?'（'+hint+'）':'');
+ box.classList.add('show');
+}
+function clearFieldError(el){
+ el.classList.remove('bad');
+ var host=el.parentNode,box=host?host.querySelector('.err'):null;
+ if(box){box.textContent='';box.classList.remove('show');}
+}
+function clearFieldErrors(){$$('[data-field]').forEach(clearFieldError);}
+function firstMapped(list){
+ for(var i=0;i<list.length;i++){var el=byField(list[i].field);if(el&&!isHidden(el))return list[i].field;}
+ return null;
+}
+function placeSummary(){
+ var panel=document.querySelector('.panel[data-panel="'+state.step+'"]'),box=$('errSummary'),warn=$('warnSummary');
+ if(!panel)return;
+ if(box&&box.parentNode!==panel)panel.insertBefore(box,panel.firstChild);
+ if(warn&&warn.parentNode!==panel)panel.insertBefore(warn,box?box.nextSibling:panel.firstChild);
+}
+function renderSummary(){
+ refreshCross();                     /* advisories stay in sync with the fields */
+ var box=$('errSummary'),items=state.errors;
+ box.textContent='';
+ if(!items.length){box.classList.remove('show');return;}
+ box.appendChild(mk('b','','請修正以下 '+items.length+' 個問題：'));
+ var ul=mk('ul');
+ items.forEach(function(e){
+  var el=byField(e.field),s=stepOfPath(e.field);
+  ul.appendChild(mk('li','',(s?'第'+s+'步 · ':'')+(el?labelOf(el):(e.field==='server'?'伺服器':(e.field||'請求')))+
+   ' — '+(e.message||'請檢查')+(e.hint?'（'+e.hint+'）':'')));
+ });
+ box.appendChild(ul);
+ box.classList.add('show');
+ placeSummary();
+}
+/* list items: {field,message,hint} from the client rules or server errors[i] */
+function renderErrors(list){
+ state.errors=(list||[]).slice();
+ clearFieldErrors();
+ state.errors.forEach(function(e){
+  var el=byField(e.field);
+  if(!el||isHidden(el))return;      /* no matching visible input -> summary box only */
+  markField(el,e.message,e.hint);
+ });
+ renderSummary();
+}
+function focusField(path){
+ var el=byField(path);
+ if(!el||isHidden(el))return false;
+ var s=stepOfEl(el);
+ if(s!==state.step)setStep(s);
+ try{el.focus({preventScroll:true});}catch(e){try{el.focus();}catch(e2){}}
+ if(el.scrollIntoView)el.scrollIntoView({block:'center'});
+ return true;
+}
+
+/* one status element, three visual states */
+function setStatus(kind,text,extra){
+ var el=$('status');
+ el.className='status '+(kind||'idle');
+ el.textContent='';
+ if(kind==='loading')el.appendChild(mk('span','spin'));
+ el.appendChild(mk('span','',text||''));
+ if(extra)el.appendChild(mk('i','',extra));
+}
+/* disable every input/select/textarea/button while the request is in flight
+   (remembering what was already disabled), then restore all of them */
+function setBusy(on){
+ state.busy=!!on;
+ $$('input,select,textarea,button').forEach(function(el){
+  if(state.busy){
+   if(!el.hasAttribute('data-was-disabled'))el.setAttribute('data-was-disabled',el.disabled?'1':'0');
+   el.disabled=true;
+  }else if(el.hasAttribute('data-was-disabled')){
+   el.disabled=el.getAttribute('data-was-disabled')==='1';
+   el.removeAttribute('data-was-disabled');
+  }
+ });
+ updateNav();
+ return state.busy;
+}
+function updateNav(){
+ $('backBtn').disabled=state.busy||state.step===1;
+ $('nextBtn').disabled=state.busy||state.step===3;
+ $('runBtn').disabled=state.busy||state.step!==3;     /* Run enabled on step 3 only */
+ document.body.classList.toggle('busy',state.busy);
+}
+function setStep(n){
+ state.step=Math.max(1,Math.min(3,n|0));
+ $$('.panel').forEach(function(p){p.classList.toggle('on',parseInt(p.getAttribute('data-panel'),10)===state.step);});
+ $$('#stepper .step').forEach(function(b){
+  var on=parseInt(b.getAttribute('data-step'),10)===state.step;
+  b.classList.toggle('on',on);
+  b.setAttribute('aria-selected',on?'true':'false');
+  b.tabIndex=on?0:-1;                 /* roving tabindex: Tab enters the tablist once */
+ });
+ placeSummary();
+ updateNav();
+ saveDraft();
+ try{window.scrollTo(0,0);}catch(e){}
+}
+/* Keyboard / click activation for the step tabs. On failure goStep has already
+   moved focus to the offending field, so we deliberately do NOT steal it back. */
+function activateStep(target){
+ if(state.busy)return false;
+ var ok=goStep(target,target>state.step);
+ if(ok)$$('#stepper .step').forEach(function(b){
+  if(parseInt(b.getAttribute('data-step'),10)===state.step){try{b.focus();}catch(e){}}
+ });
+ return ok;
+}
+/* ARIA tabs pattern: arrows move between tabs, Home/End jump to the ends. */
+function stepKeydown(ev){
+ var dir={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[ev.key];
+ if(ev.key==='Home'||ev.key==='End'){
+  ev.preventDefault();activateStep(ev.key==='Home'?1:3);return;
+ }
+ if(!dir)return;
+ ev.preventDefault();
+ activateStep(Math.max(1,Math.min(3,state.step+dir)));
+}
+function goStep(target,validate){
+ if(state.busy)return false;
+ target=Math.max(1,Math.min(3,target|0));
+ if(validate&&target>state.step){
+  var errs=[];
+  for(var s=state.step;s<target;s++)errs=errs.concat(validateStep(s));
+  /* cross-field rules belong to whichever step holds the offending field */
+  crossErrors().forEach(function(c){var cs=stepOfPath(c.field);if(cs&&cs<target)errs.push(c);});
+  if(errs.length){
+   renderErrors(errs);
+   var first=firstMapped(errs);
+   if(first)focusField(first);
+   setStatus('error','這一步的資料需要修正，請見上方紅色提示。');
+   return false;
+  }
+ }
+ setStep(target);
+ return true;
+}
+function setMode(m){
+ state.mode=(m==='manual')?'manual':'auto';
+ $$('#modeSeg .seg-btn').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-mode')===state.mode);});
+ $('autoBlock').classList.toggle('hidden',state.mode!=='auto');
+ $('manualBlock').classList.toggle('hidden',state.mode!=='manual');
+ renderErrors([]);
+ saveDraft();
+}
+function setPurpose(p){
+ state.purpose=(p==='rental')?'rental':'owner_occupier';
+ $('f-purpose').value=state.purpose;
+ $('rentalBlock').classList.toggle('hidden',state.purpose!=='rental');
+ renderErrors([]);
+ saveDraft();
+}
+
+/* report tab + popup-blocker fallback */
+function setReport(html){
+ if(state.reportUrl){try{URL.revokeObjectURL(state.reportUrl);}catch(e){}state.reportUrl=null;}
+ if(!html){$('fallback').classList.add('hidden');return null;}
+ state.reportUrl=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+ $('dlBtn').href=state.reportUrl;
+ return state.reportUrl;
+}
+function openReport(){
+ if(!state.reportUrl)return false;
+ var w=window.open(state.reportUrl,'_blank');
+ return !!(w&&!w.closed);
+}
+
+var KPIS=[
+ {k:'asking_price',l:'叫價 Asking',money:1},
+ {k:'fair_value',l:'公允價值 Fair value',money:1},
+ {k:'premium_pct',l:'溢價 Premium',pct:1,sign:1},
+ {k:'maximum_buy_price',l:'最高買入價 Max buy',money:1},
+ {k:'monthly_payment',l:'每月供款 Payment',money:1},
+ {k:'net_yield',l:'淨租金回報 Net yield',pct:1},
+ {k:'dsr',l:'供款佔比 DSR',pct:1}
+];
+var RISK={low:'Low 低',medium:'Medium 中',high:'High 高',very_high:'Very High 極高'};
+function kpiValue(s,v){
+ if(v===null||v===undefined||v==='')return null;
+ if(typeof v!=='number'||!isFinite(v))return String(v);
+ if(s.pct)return (s.sign&&v>0?'+':'')+(v*100).toFixed(2)+'%';
+ return 'HK$'+formatMoney(v);
+}
+function renderKpis(data){
+ var host=$('kpis'),m=data.metrics||{},shown=0;
+ host.textContent='';
+ KPIS.forEach(function(s){
+  var val=kpiValue(s,m[s.k]);
+  if(val===null)return;
+  var c=mk('div','kpi'+(shown===0?' hi':''));
+  c.appendChild(mk('b','',s.l));
+  c.appendChild(mk('span','',val));
+  host.appendChild(c);shown++;
+ });
+ host.classList.toggle('hidden',shown===0);
+}
+/* auto mode hides the manual asking_price input, so the server's "no price from
+   the URL" error must land on the override field that IS visible there —
+   otherwise the user only sees a summary line and no field to fix. */
+function remapError(e){
+ if(!e||state.mode!=='auto'||e.field!=='property.asking_price')return e;
+ var el=byField('overrides.price');
+ return (el&&!isHidden(el))?{field:'overrides.price',message:e.message,hint:e.hint}:e;
+}
+function showErrorList(list,statusText){
+ var raw=(list||[]).slice();
+ state.errors=raw.map(remapError);
+ var mapped=firstMapped(state.errors);
+ if(mapped)setStep(stepOfPath(mapped));
+ renderErrors(state.errors);       /* marks every matching field + summary box */
+ if(mapped)focusField(mapped);     /* scroll to / focus the first bad field */
+ var extra='';
+ for(var i=0;i<raw.length;i++){
+  if(raw[i].field==='property.asking_price'&&state.mode==='auto'){
+   extra='系統不會猜測價格：請在「價格覆寫」填上叫價，或切換到「② 手動輸入」。';
+   break;
+  }
+ }
+ setStatus('error',statusText||'分析未完成，請修正以下問題後再試。',extra);
+}
+
+/* fetch('/api/analyse') is SAME-ORIGIN: a file:// page can never reach it, and a
+   page served by another origin gets no CORS header. Say which one broke. */
+function netHint(){
+ if(location.protocol==='file:'){
+  return '此頁是以 file:// 直接開啟，file:// 頁面無法呼叫 /api/analyse（同源限制）。'+
+   '請先在本機執行 python analyst_server.py，再開啟它在終端印出的網址'+
+   '（預設 http://hk-ai-property-analyst.localhost/ ，或 http://127.0.0.1/ ）。';
+ }
+ return '本頁來源 '+location.protocol+'//'+location.host+' 連不到同源的 /api/analyse：'+
+  '請確認 python analyst_server.py 仍在執行（或已被關閉／已改用其他埠），'+
+  '然後開啟終端印出的網址重試。';
+}
+
+async function run(){
+ if(state.busy)return;                                /* duplicate-submission guard */
+ var errs=validateAll();
+ if(errs.length){
+  renderErrors(errs);
+  var bad=firstMapped(errs);
+  if(bad)focusField(bad);
+  setStatus('error','輸入資料有誤，未送出分析。請修正紅框欄位後再試。');
+  return;
+ }
+ var body=buildPayload();
+ setBusy(true);
+ setStatus('loading','分析中（抽取 → 試算 → 估值 → 情境 → 風險 → 判決）… 約 20–60 秒',
+  '正在等待 /api/analyse 回應，請勿關閉此頁；所有輸入暫時鎖定。');
+ var data=null,httpStatus=0,netErr=null,ATTEMPTS=2;   /* one automatic retry (spec #21) */
+ try{
+  for(var attempt=1;attempt<=ATTEMPTS;attempt++){
+   data=null;httpStatus=0;netErr=null;
+   try{
+    var resp=await fetch('/api/analyse',{method:'POST',headers:{'Content-Type':'application/json'},
+     body:JSON.stringify(body)});
+    httpStatus=resp.status;
+    try{data=await resp.json();}catch(pe){data=null;}
+   }catch(err){netErr=err;}
+   if(!(netErr||httpStatus>=500)||attempt===ATTEMPTS)break;   /* only transient failures retry */
+   setStatus('loading','連線不穩，正在自動重試（第 '+(attempt+1)+' 次）…',
+    '輸入無需重填；deterministic 引擎會重新計算。');
+   await new Promise(function(res){setTimeout(res,1200);});
+  }
+ }
+ finally{setBusy(false);}                             /* restore on success AND error */
+ if(netErr){
+  showErrorList([{field:'server',message:'無法連線分析服務：'+((netErr&&netErr.message)||'network error')+
+   '。'+netHint()}],'請求失敗（網絡／服務中斷），所有輸入已還原。');
+  return;
+ }
+ if(!data||data.ok!==true||httpStatus!==200){
+  var list=(data&&data.errors&&data.errors.length)?data.errors:
+   [{field:'server',message:'伺服器回應 HTTP '+httpStatus+'，未產生報告。'}];
+  showErrorList(list,'分析未完成（HTTP '+httpStatus+'），所有輸入已還原。');
+  return;
+ }
+ state.analysis=data;
+ state.errors=[];
+ clearFieldErrors();
+ renderSummary();
+ setReport(data.html);                                /* revokes the previous object URL */
+ var opened=openReport();
+ var verdict=String(data.verdict||(data.summary&&data.summary.verdict)||'—');
+ var verdictZh=String(data.verdict_zh||'');
+ if(verdictZh&&verdict.indexOf(verdictZh)<0)verdict+='（'+verdictZh+'）';   /* PASS（放棄） */
+ var why=String(data.why||(data.summary&&data.summary.headline)||'');
+ var risk=data.risk_level?(RISK[data.risk_level]||data.risk_level):'';
+ setStatus('success','判決：'+verdict+(why?' — '+why:'')+(risk?'（風險等級 '+risk+'）':''),
+  (opened?'報告已在新分頁開啟；如分頁被關閉，可用下方按鈕重新開啟或下載。':
+   '瀏覽器阻擋了新分頁（popup blocked）：請用下方「開啟報告」或「下載報告」，結果不會遺失。')+
+  (data.warnings&&data.warnings.length?'｜系統提示 '+data.warnings.length+' 項':''));
+ $('fallback').classList.remove('hidden');            /* both controls stay reachable */ renderKpis(data);
+}
+
+/* step 3 info panel: read-only system configuration (GET /api/schema) */
+function chip(text,primary){return mk('span','chip'+(primary?' sc':''),text);}
+function loadSchemaPanel(){
+ var panel=$('sysPanel'),body=$('sysBody');
+ fetch('/api/schema',{headers:{'Accept':'application/json'}})
+ .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+ .then(function(s){
+  if(!s||typeof s!=='object')throw new Error('bad schema');
+  var sc=s.scenarios||{},steps=s.rate_stress_steps||[],prov=s.provenance_labels||[];
+  body.textContent='';
+  ['bear','base','bull'].forEach(function(k){
+   var v=sc[k];
+   if(!v)return;
+   var row=mk('div','scrow');
+   row.appendChild(chip(String(v.label||k.toUpperCase())+(v.label_zh?' '+v.label_zh:''),true));
+   row.appendChild(document.createTextNode(' '+(v.description||'')));
+   body.appendChild(row);
+  });
+  if(steps.length){
+   body.appendChild(mk('div','lbl','利率壓力測試 Rate stress steps（按揭利率上升）'));
+   var c1=mk('div','chips');
+   c1.appendChild(chip('基準 Base +0.00pp'));
+   steps.forEach(function(x){c1.appendChild(chip('+'+(Number(x)*100).toFixed(2)+'pp'));});
+   body.appendChild(c1);
+  }
+  if(prov.length){
+   body.appendChild(mk('div','lbl','資料來源標記詞彙 Provenance vocabulary'));
+   var c2=mk('div','chips');
+   prov.forEach(function(p){c2.appendChild(chip(String(p)));});
+   body.appendChild(c2);
+  }
+  body.appendChild(mk('div','scrow','engine '+(s.engine_version||'—')+' · schema '+(s.schema_version||'—')+
+   ' · 由後端 tools/config.py 決定，前端只顯示、不可修改。'));
+  panel.classList.remove('hidden');
+ })
+ .catch(function(){                                    /* never blocks the analysis */
+  body.textContent='';
+  body.appendChild(mk('div','hint','無法載入系統設定（GET /api/schema 失敗）。分析功能不受影響。'));
+  panel.classList.remove('hidden');
+ });
+}
+
+function onBlurField(el){
+ if(state.busy||isHidden(el))return;
+ var kind=kindOf(el),path=el.getAttribute('data-field'),raw=rawOf(el),n;
+ if(raw!==''&&kind!=='text'&&kind!=='enum'){
+  n=readNumber(el);                                   /* format money/number on blur */
+  if(n!==null&&!isNaN(n))el.value=(kind==='money')?formatMoney(n):String(Math.round(n*1e6)/1e6);
+ }
+ if(kind==='text'||kind==='enum'||!R[path]){refreshCross();return;}
+ var fresh=validateStep(stepOfEl(el)).filter(function(e){return e.field===path;});
+ state.errors=state.errors.filter(function(e){return e.field!==path;}).concat(fresh);
+ if(fresh.length)markField(el,fresh[0].message);else clearFieldError(el);
+ saveDraft();
+ renderSummary();          /* renderSummary keeps the cross-field advisories in sync */
+}
+/* listeners attached ONCE; no inline onclick anywhere */
+function bind(){
+ $$('#modeSeg .seg-btn').forEach(function(b){
+  b.addEventListener('click',function(){if(!state.busy)setMode(b.getAttribute('data-mode'));});
+ });
+ $$('#stepper .step').forEach(function(b){
+  b.addEventListener('click',function(){activateStep(parseInt(b.getAttribute('data-step'),10));});
+ });
+ $('stepper').addEventListener('keydown',stepKeydown);
+ $('f-purpose').addEventListener('change',function(){if(!state.busy)setPurpose(this.value);});
+ $('backBtn').addEventListener('click',function(){goStep(state.step-1,false);});
+ $('nextBtn').addEventListener('click',function(){goStep(state.step+1,true);});
+ $('runBtn').addEventListener('click',run);
+ $('openBtn').addEventListener('click',function(){openReport();});
+ $('clearBtn').addEventListener('click',function(){
+  if(state.busy)return;
+  if(!window.confirm('清除這個分頁的草稿並重新開始？'))return;
+  clearDraft();
+  try{window.location.reload();}catch(e){}
+ });
+ $$('[data-field]').forEach(function(el){
+  el.addEventListener('blur',function(){onBlurField(el);});
+  el.addEventListener('input',function(){if(!state.busy)clearFieldError(el);saveDraft();});
+  el.addEventListener('change',function(){onBlurField(el);});
+ });
+ if($('compAdd'))$('compAdd').addEventListener('click',function(){if(state.busy)return;addCompRow();});
+}
+function init(){
+ bind();
+ var draft=restoreDraft();                            /* must run BEFORE money formatting */
+ $$('[data-money]').forEach(function(el){             /* format default values on load */
+  setField(el.getAttribute('data-field'),el.value);
+ });
+ setMode(state.mode);                                 /* re-apply: draft may predate a mode */
+ setPurpose(state.purpose);
+ setStep(draft&&draft.step?draft.step:1);
+ renderErrors([]);
+ refreshCross();
+ state.ready=true;                                    /* drafts may be written from here on */
+ if(draft){
+  setStatus('idle','已還原這個分頁先前未送出的輸入。','要重新開始，按「清除草稿 Clear draft」。');
+ }
+ loadSchemaPanel();
+}
+init();
+})();
+</script>
+</body>
+</html>

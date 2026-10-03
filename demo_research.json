@@ -1,0 +1,46 @@
+{
+  "_note": "DEMO research dataset. Values are APPROXIMATIONS assembled from public news (user-accepted approximation, not a paid API). Every entry carries its real source URL + date + confidence. For pipeline validation only.",
+  "comparables": [
+    {"title": "退休人士796萬FULL PAY購昇薈2房戶", "estate": "昇薈", "block": null, "layout": "2房",
+     "price": 7960000, "usable_area_sqft": 530,
+     "date": "2026-08-21", "confidence": "low",
+     "source": "https://finance.mingpao.com/fin/instantp/20260821/1787302000703/",
+     "note": "2房 vs subject 3房；面積為新聞間接估計(approx)"},
+    {"title": "東涌東環2房 570萬元成交 呎價約1.2萬", "estate": "東環", "block": null, "layout": "2房",
+     "price": 5700000, "usable_area_sqft": 475,
+     "date": "2026-08-01", "confidence": "low",
+     "source": "https://hk.centanet.com/info/zh-cn/property-news/193805",
+     "note": "呎價≈$12,000 為新聞原述；面積由呎價反推(approx)"}
+  ],
+  "rentals": [
+    {"title": "東涌昇薈 3房 租盤（新聞區間近似）", "estate": "昇薈", "layout": "3房",
+     "monthly_rent": 27000, "usable_area_sqft": 741,
+     "date": "2026-08-01", "confidence": "low",
+     "source": "https://hk.centanet.com/findproperty/",
+     "note": "近似區間 HK$25,000–30,000/月，取中位數；非實價單一租約(approx)"}
+  ],
+  "market": [
+    {"title": "CCL 最新 162.02 (2026-09-04)", "metric": "CCL", "value": 162.02,
+     "date": "2026-09-04", "confidence": "high",
+     "source": "https://hk.centanet.com/CCI/CCI-Information?type=CCL"},
+    {"title": "東涌上月二手交投倍升 創3個月新高", "metric": "東涌交投", "value": "成交量倍升",
+     "date": "2026-09-02", "confidence": "medium",
+     "source": "https://news.mingpao.com/pns/經濟/article/20260902/s00004/"},
+    {"title": "東涌本月暫錄40宗二手成交", "metric": "東涌成交宗數", "value": "40宗/月",
+     "date": "2026-08-24", "confidence": "medium",
+     "source": "https://finance.mingpao.com/fin/instantp/20260824/"},
+    {"title": "港息不變 下半年樓市料價量齊升", "metric": "利率/後市", "value": "按兵不動→料價量齊升",
+     "date": "2026-06-19", "confidence": "medium",
+     "source": "https://epaper.tkww.hk/a/202606/19/AP6a3454cde4b04773b0709135.html"}
+  ],
+  "mortgage": [
+    {"title": "中原按揭 2026年8月媒體報導總覽", "metric": "按揭利率環境", "value": "P按/H按參考",
+     "date": "2026-08-31", "confidence": "medium",
+     "source": "https://www.centamortgage.com/information/detail/193356"}
+  ],
+  "policy": [
+    {"title": "2024全面撤辣：SSD/BSD取消、AVD統一第2標準", "metric": "印花稅政策", "value": "首置/非首置同階梯",
+     "date": "2024-02-28", "confidence": "high",
+     "source": "https://zh.wikipedia.org/zh-tw/中原城市領先指數"}
+  ]
+}
